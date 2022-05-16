@@ -19,6 +19,6 @@ Gem::Specification.new do |s|
 	s.extra_rdoc_files = ['README.md']
 	s.rdoc_options << '--main' << 'README.md'
 
-	s.add_development_dependency "bundler", "~> 1.5"
+	s.add_development_dependency "bundler", "~> 2.3"
 	s.add_development_dependency "rake"
 end
