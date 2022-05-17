@@ -40,7 +40,7 @@ class I2CDevice
       end
 
       def set(args)
-        args = @config.except(:operational_status).merge(args)
+        args = @config.tap { |hs| hs.delete(:operational_status) }.merge(args)
 
         @device.i2cset(
           ADS101x::ADDRESS_POINTER[:config_register],

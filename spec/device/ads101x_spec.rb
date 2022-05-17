@@ -3,12 +3,11 @@
 
 $LOAD_PATH.unshift "lib", "."
 
-require "pry"
 require "tempfile"
 
 require "i2c/device/ads101x/ads1015"
 require "i2c/driver/i2c-dev"
-require "spec/mocki2cdevice"
+require_relative "../mocki2cdevice"
 
 describe do
   describe I2CDevice::ADS101x::ADS1013 do
@@ -17,7 +16,7 @@ describe do
       allow(File).to receive(:open) do
         @mock.open
       end
-  
+
       @driver = I2CDevice::Driver::I2CDev.new(@mock.path)
     end
 
@@ -38,8 +37,8 @@ describe do
       it "should write config" do
         subject.configuration(
           {
-            operation_mode: :one_shot,
-            data_rate:      :sps250
+            operational_status: :one_shot,
+            data_rate:          :sps250
           }
         )
         expect(subject.configuration.operational_status).to eq :converting
@@ -81,7 +80,7 @@ describe do
       allow(File).to receive(:open) do
         @mock.open
       end
-  
+
       @driver = I2CDevice::Driver::I2CDev.new(@mock.path)
     end
 
@@ -106,16 +105,14 @@ describe do
 
       it "should write config" do
         subject.configuration(
-          {
-            operational_status:  :noop,
-            gain_mode:           :four_V,
-            operation_mode:      :continuous,
-            data_rate:           :sps490,
-            comparator_mode:     :window,
-            comparator_polarity: :active_high,
-            comparator_latch:    :latching,
-            comparator_queue:    :one_conversion
-          }
+          operational_status:  :noop,
+          gain_mode:           :four_V,
+          operation_mode:      :continuous,
+          data_rate:           :sps490,
+          comparator_mode:     :window,
+          comparator_polarity: :active_high,
+          comparator_latch:    :latching,
+          comparator_queue:    :one_conversion
         )
         expect(subject.configuration.operational_status).to eq :converting
         expect(subject.configuration.gain_mode).to eq :four_V
@@ -135,7 +132,7 @@ describe do
 
       context "FSR +/- 6144mV" do
         before do
-          subject.configuration({ gain_mode: :six_V })
+          subject.configuration(gain_mode: :six_V)
         end
 
         it "should give correct readings" do
@@ -143,7 +140,7 @@ describe do
           expect(subject.conversion).to eq 6141
           @mock.memory[0] = [0x00, 0xb0]
           expect(subject.conversion).to eq 33
-  
+
           @mock.memory[0] = [0xff, 0xf0]
           expect(subject.conversion).to eq(-6144)
           @mock.memory[0] = [0xff, 0xa0]
@@ -153,7 +150,7 @@ describe do
 
       context "FSR +/- 4096mV" do
         before do
-          subject.configuration({ gain_mode: :four_V })
+          subject.configuration(gain_mode: :four_V)
         end
 
         it "should give correct readings" do
@@ -161,7 +158,7 @@ describe do
           expect(subject.conversion).to eq 4094
           @mock.memory[0] = [0x00, 0xb0]
           expect(subject.conversion).to eq 22
-  
+
           @mock.memory[0] = [0xff, 0xf0]
           expect(subject.conversion).to eq(-4096)
           @mock.memory[0] = [0xff, 0xa0]
@@ -171,7 +168,7 @@ describe do
 
       context "FSR +/- 2048mV" do
         before do
-          subject.configuration({ gain_mode: :two_V })
+          subject.configuration(gain_mode: :two_V)
         end
 
         it "should give correct readings" do
@@ -179,7 +176,7 @@ describe do
           expect(subject.conversion).to eq 2047
           @mock.memory[0] = [0x00, 0xb0]
           expect(subject.conversion).to eq 11
-  
+
           @mock.memory[0] = [0xff, 0xf0]
           expect(subject.conversion).to eq(-2048)
           @mock.memory[0] = [0xff, 0xa0]
@@ -189,7 +186,7 @@ describe do
 
       context "FSR +/- 1024mV" do
         before do
-          subject.configuration({ gain_mode: :one_V })
+          subject.configuration(gain_mode: :one_V)
         end
 
         it "should give correct readings" do
@@ -197,7 +194,7 @@ describe do
           expect(subject.conversion).to eq 1023.5
           @mock.memory[0] = [0x00, 0xb0]
           expect(subject.conversion).to eq 5.5
-  
+
           @mock.memory[0] = [0xff, 0xf0]
           expect(subject.conversion).to eq(-1024.0)
           @mock.memory[0] = [0xff, 0xa0]
@@ -207,7 +204,7 @@ describe do
 
       context "FSR +/- 512mV" do
         before do
-          subject.configuration({ gain_mode: :half_V })
+          subject.configuration(gain_mode: :half_V)
         end
 
         it "should give correct readings" do
@@ -215,7 +212,7 @@ describe do
           expect(subject.conversion).to eq 511.75
           @mock.memory[0] = [0x00, 0xb0]
           expect(subject.conversion).to eq 2.75
-  
+
           @mock.memory[0] = [0xff, 0xf0]
           expect(subject.conversion).to eq(-512.0)
           @mock.memory[0] = [0xff, 0xa0]
@@ -225,7 +222,7 @@ describe do
 
       context "FSR +/- 256mV" do
         before do
-          subject.configuration({ gain_mode: :quarter_V })
+          subject.configuration(gain_mode: :quarter_V)
         end
 
         it "should give correct readings" do
@@ -233,7 +230,7 @@ describe do
           expect(subject.conversion).to eq 255.875
           @mock.memory[0] = [0x00, 0xb0]
           expect(subject.conversion).to eq 1.375
-  
+
           @mock.memory[0] = [0xff, 0xf0]
           expect(subject.conversion).to eq(-256.0)
           @mock.memory[0] = [0xff, 0xa0]
@@ -249,7 +246,7 @@ describe do
       allow(File).to receive(:open) do
         @mock.open
       end
-  
+
       @driver = I2CDevice::Driver::I2CDev.new(@mock.path)
     end
 
@@ -275,17 +272,15 @@ describe do
 
       it "should write config" do
         subject.configuration(
-          {
-            operational_status:  :noop,
-            input_multiplexer:   :ain0_ain3,
-            gain_mode:           :four_V,
-            operation_mode:      :continuous,
-            data_rate:           :sps490,
-            comparator_mode:     :window,
-            comparator_polarity: :active_high,
-            comparator_latch:    :latching,
-            comparator_queue:    :one_conversion
-          }
+          operational_status:  :noop,
+          input_multiplexer:   :ain0_ain3,
+          gain_mode:           :four_V,
+          operation_mode:      :continuous,
+          data_rate:           :sps490,
+          comparator_mode:     :window,
+          comparator_polarity: :active_high,
+          comparator_latch:    :latching,
+          comparator_queue:    :one_conversion
         )
         expect(subject.configuration.operational_status).to eq :converting
         expect(subject.configuration.input_multiplexer).to eq :ain0_ain3

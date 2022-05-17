@@ -18,8 +18,8 @@ class I2CDevice
 
       # Get/Set device configuration register
       # @param args [Hash<Symbol>] parameters to set
-      def configuration(args = nil, refresh_from_device: false)
-        if args.nil?
+      def configuration(refresh_from_device: false, **args)
+        if args.empty?
           @configuration.read if refresh_from_device
 
           @configuration
