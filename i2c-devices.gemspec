@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
 	s.rdoc_options << '--main' << 'README.md'
 
 	s.add_development_dependency "bundler", "~> 2.3"
-	s.add_development_dependency "cairo"
-	s.add_development_dependency "rspec"
-	s.add_development_dependency "rake"
+        s.add_development_dependency "cairo", "~> 1.17.5"
+        s.add_development_dependency "rspec", "~> 3.11.0"
+        s.add_development_dependency "rake", "~> 13.0.6"
 end

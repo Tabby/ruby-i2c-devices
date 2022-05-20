@@ -3,4 +3,4 @@ sketch.rb
 html
 *.swp
 Gemfile.lock
-
+.bundle
