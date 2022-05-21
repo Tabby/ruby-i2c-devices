@@ -40,10 +40,7 @@ class I2CDevice
       end
 
       def one_shot_conversion
-        # Send command to begin one-shot conversion and wait if necessary for conversion to finish
-        if configuration(operation_status: :one_shot).operational_status == :converting
-          sleep 1.0 / data_rate while busy?
-        end
+        configuration(operation_status: :one_shot)
         conversion
       end
 
