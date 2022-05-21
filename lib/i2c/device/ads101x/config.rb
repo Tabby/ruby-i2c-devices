@@ -46,7 +46,7 @@ class I2CDevice
           ADS101x::ADDRESS_POINTER[:config_register],
           *generate_config(args)
         )
-        @config = args
+        read
       end
 
       private
