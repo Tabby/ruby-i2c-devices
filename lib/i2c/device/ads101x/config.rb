@@ -36,7 +36,7 @@ class I2CDevice
       def read
         response = @device.i2cget(ADS101x::ADDRESS_POINTER[:config_register], 2).unpack("C2")
         @config = ADS101x::DEFAULT_CONFIG.merge(parse_config(response))
-        @config
+        self
       end
 
       def set(args)
